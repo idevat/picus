@@ -68,17 +68,15 @@ export default Base.extend({
     @public
   */
   authenticate(data) {
-    const modData = {
-      username: data.identification,
-      password: data.password,
-      Login: 'login',
-    };
-
-    return this.makeRequest(
-      { type: 'POST', url: this.serverLoginEndpoint, data: _jsonToQueryString(modData) },
-      'Attempt to login was successful',
-      'Attempt to logout was not successful',
-    );
+    return this.makeRequest({
+      type: 'POST',
+      url: this.serverLoginEndpoint,
+      data: _jsonToQueryString({
+        username: data.identification,
+        password: data.password,
+        Login: 'login',
+      }),
+    });
   },
 
   /**
@@ -95,11 +93,7 @@ export default Base.extend({
     @public
   */
   restore() {
-    return this.makeRequest(
-      { type: 'GET', url: this.serverStatusEndpoint },
-      'Attempt to check if session is authenticated was successful',
-      'Attempt to check if session is authenticated was unsuccessful',
-    );
+    return this.makeRequest({ type: 'GET', url: this.serverStatusEndpoint });
   },
 
   /**
@@ -113,11 +107,7 @@ export default Base.extend({
     @public
   */
   invalidate() {
-    return this.makeRequest(
-      { type: 'GET', url: this.serverLogoutEndpoint },
-      'Attempt to logout session was successful',
-      'Attempt to logout session was unsuccessful',
-    );
+    return this.makeRequest({ type: 'GET', url: this.serverLogoutEndpoint });
   },
 
   /**
@@ -127,18 +117,24 @@ export default Base.extend({
     @param {String} debugMsgTrue Message displayed after successful AJAX call
     @param {String} debugMsgFalse Message displayed after unsuccessful AJAX call
   */
-  makeRequest(options, debugMsgTrue, debugMsgFalse) {
+  makeRequest(options) {
     return new RSVP.Promise((resolve, reject) => {
       Ember.$.ajax(options).then(
         (response) => {
           Ember.run(() => {
-            Logger.debug(`${debugMsgTrue} with response: ${JSON.stringify(response)}`);
+            Logger.debug(
+              `Attempt to call ${options.url} was sucessfull`
+              + ` with response: ${JSON.stringify(response)}`,
+            );
             resolve(response);
           });
         },
         (xhr) => {
           Ember.run(() => {
-            Logger.debug(`${debugMsgFalse} with xhr: ${JSON.stringify(xhr)}`);
+            Logger.debug(
+              `Attempt to call ${options.url} was unsucessfull`
+              + ` with response: ${JSON.stringify(xhr)}`,
+            );
             reject(xhr);
           });
         },
