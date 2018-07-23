@@ -20,7 +20,11 @@
   {{/with}}
 
   {{#w.step name='authorizeNodes'}}
-    {{#form-for model.authorizedNodesForm submit=(route-action 'linkTo') as |f|}}
+    {{#model-form
+      model.authorizedNodesForm
+      submit=(route-action 'linkTo')
+      as |f|
+    }}
       {{f.text-field 'clusterName'}}
 
       {{#form-dynamic
@@ -29,7 +33,6 @@
         isEmpty=(route-action 'emptyNode')
         as |record index dynamicUpdate|
       }}
-      {{!--
         {{f.node-field
           (concat 'nodes_' index)
           index=index
@@ -40,9 +43,8 @@
             )
           )
         }}
-      --}}
       {{/form-dynamic}}
-    {{/form-for}}
+    {{/model-form}}
     <button {{action w.transition-to 'summary'}}>NEXT</button>
   {{/w.step}}
 

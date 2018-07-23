@@ -1,0 +1,45 @@
+{{#form-field propertyName
+  class="fence-field"
+  classNames=fieldClasses
+  errorClasses=errorClasses
+  hintClasses=hintClasses
+  inputClasses=inputClasses
+  labelClasses=labelClasses
+  serializeValue=serializeValue
+  deserializeValue=deserializeValue
+  object=object
+  hint=hint
+  form=form
+  label=label
+  control=control
+  focusIn=fieldFocusIn
+  update=(action update)
+  as |f|
+}}
+  <span>
+    {{#if (get (get object propertyName) 'checked')}}
+      <input type="checkbox"
+       checked="checked"
+       onclick={{action 'selectNode' value='target.checked' }}
+      />
+    {{else}}
+      <input type="checkbox"
+        onclick={{action 'selectNode' value='target.checked' }}
+      />
+    {{/if}}
+    <span>{{label}}</span>
+  </span>
+
+  {{#if port}}
+    {{#if (get (get object propertyName) 'checked')}}
+      <input
+        value={{get (get object propertyName) 'plugs'}}
+        placeholder={{label}}
+        oninput={{action (mut (get (get object propertyName) 'plugs'))
+        value="target.value"}}
+      />
+    {{/if}}
+  {{/if}}
+  {{f.errors}}
+  {{f.hint}}
+{{/form-field}}
