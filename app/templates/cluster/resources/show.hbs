@@ -128,31 +128,16 @@
     submitAction=(route-action 'addColocationPreference')
     validations=model.validations.addColocationPreference as |f changeset|
   }}
-
-  {{#form-dynamic
-    dataObject=changeset
-    dataObjectKey='targetResources'
-    max=1
-    as |record index dynamicUpdate|
-  }}
     {{f.custom-field
-      (concat 'targetResources_' index)
+      'targetResourceName'
       control='form-for-power-select'
       label='Target Resource'
       multiple=false
       placeholder='Select a resource'
-      step=(map-by 'name' (without selResource model.resources))
-      tabindex=record
-      max=index
-      min=changeset
-      pattern=(action dynamicUpdate '' index)
+      step=(without (get selResource "name") model.allResourcesNames)
+      tabindex=changeset.targetResourceName
+      pattern=(action (mut changeset.targetResourceName))
     }}
-    {{f.custom-field
-      (concat '_targetResources_' index)
-      errorsOnly=true
-    }}
-  {{/form-dynamic}}
-
     {{f.select-field 'colocationType' 'Together Apart'}}
     {{f.text-field 'score'}}
   {{/attr-form}}
@@ -179,7 +164,7 @@
         label='Resource Set'
         multiple=true
         placeholder='Select resources'
-        step=(map-by 'name' model.resources)
+        step=model.allResourcesNames
         tabindex=record.selected
         max=index
         min=changeset
@@ -222,29 +207,16 @@
     submitAction=(route-action 'addOrderingPreference')
     validations=model.validations.addOrderingPreference as |f changeset|
   }}
-    {{#form-dynamic
-      dataObject=changeset
-      dataObjectKey='targetResources'
-      max=1
-      as |record index dynamicUpdate|
+    {{f.custom-field
+      'targetResourceName'
+      control='form-for-power-select'
+      label='Target Resource'
+      multiple=false
+      placeholder='Select a resource'
+      step=(without (get selResource "name") model.allResourcesNames)
+      tabindex=changeset.targetResourceName
+      pattern=(action (mut changeset.targetResourceName))
     }}
-      {{f.custom-field
-        (concat 'targetResources_' index)
-        control='form-for-power-select'
-        label='Target Resource'
-        multiple=false
-        placeholder='Select a resource'
-        step=(map-by 'name' (without selResource model.resources))
-        tabindex=record
-        max=index
-        min=changeset
-        pattern=(action dynamicUpdate '' index)
-      }}
-      {{f.custom-field
-        (concat '_targetResources_' index)
-        errorsOnly=true
-      }}
-    {{/form-dynamic}}
     {{f.select-field 'targetAction' 'starts promotes demotes stops'}}
     {{f.select-field 'order' 'before after'}}
     {{f.select-field 'action' 'starts promotes demotes stops'}}
@@ -272,11 +244,11 @@
         label='Resource Set'
         multiple=true
         placeholder='Select resources'
-        step=(map-by 'name' model.resources)
+        step=model.allResourcesNames
         tabindex=record
         max=index
         min=changeset
-        pattern=(action dynamicUpdate '' index)
+        pattern=(action dynamicUpdate index)
       }}
     {{/form-dynamic}}
   {{/attr-form}}
@@ -347,11 +319,11 @@
         label='Resource Set'
         multiple=true
         placeholder='Select resources'
-        step=(map-by 'name' model.resources)
+        step=model.allResourcesNames
         tabindex=record
         max=index
         min=changeset
-        pattern=(action dynamicUpdate '' index)
+        pattern=(action dynamicUpdate index)
       }}
     {{/form-dynamic}}
   {{/attr-form}}

@@ -31,19 +31,9 @@ export default Ember.Component.extend({
    */
   multiple: false,
 
-  didReceiveAttrs(...args) {
-    this._super(...args);
-
-    Ember.Logger.assert(
-      this.get('min') !== undefined,
-      "Component form-for-power-select requires argument 'min' that contains changeset",
-    );
-  },
-
   actions: {
     onChange(selectedIndex, value) {
       this.get('pattern')(value);
-      this.get('min').set(`_${this.get('propertyName')}`, value);
     },
     onCreate(newItem, component) {
       component.options.unshiftObject(newItem);
