@@ -25,17 +25,25 @@ moduleForAcceptance('Acceptance | delete multiple attributes', {
 
 test('Delete selected on node attributes', async (assert) => {
   defaultScenario(server);
+  const url = '/cluster/my/nodes/show/virtual01?tab=attributes';
+  const firstUtilAttr = 'table tr:eq(0) td';
+  const deleteControl = `${firstUtilAttr}:eq(3) .glyphicon-trash`;
 
-  await visit('/cluster/my/nodes/show/virtual01?tab=attributes');
+  await visit(url);
 
-  let tableCells = find('table tr td');
-  assert.equal('util attr #99', tableCells[1].innerText, 'First attribute exists as expected');
+  // First attribute exists as expected
+  assert.equal('util attr #99', find(`${firstUtilAttr}:eq(1)`).text());
+  assert.equal(find(deleteControl).length, 1);
 
-  await click(find('table tr td input')[0]);
-  await click(find('button')[3]);
+  await click(find(`${firstUtilAttr} input:eq(0)`));
+  await click(find('button')[3]); // Delete
 
-  tableCells = find('table tr td');
-  assert.equal(0, tableCells.length, 'First attribute was removed');
-
-  assert.equal(currentURL(), '/cluster/my/nodes/show/virtual01?tab=attributes');
+  andThen(() => {
+    assert.equal(find(deleteControl).length, 0);
+    assert.equal(
+      find(`${firstUtilAttr}:eq(3)`).text().match('DELETING').length,
+      1,
+    );
+    assert.equal(currentURL(), url);
+  });
 });

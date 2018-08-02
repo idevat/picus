@@ -1,5 +1,9 @@
 {{#step-manager as |w|}}
-  {{#with (hash authorizeNodes='Authorize Nodes' fenceProperties='Properties') as |labels|}}
+  {{#with (hash
+      authorizeNodes='Authorize Nodes'
+      fenceProperties='Properties'
+    ) as |labels|
+  }}
     {{#each w.steps as |step|}}
       {{#if (gt step w.currentStep)}}
         <button>
@@ -25,12 +29,18 @@
         isEmpty=(route-action 'emptyNode')
         as |record index dynamicUpdate|
       }}
+      {{!--
         {{f.node-field
           (concat 'nodes_' index)
           index=index
           authorize=(route-action 'authorizeNode')
-          update=(action (pipe (route-action 'xyz' record) (action dynamicUpdate index)))
+          update=(
+            action (
+              pipe (route-action 'xyz' record) (action dynamicUpdate index)
+            )
+          )
         }}
+      --}}
       {{/form-dynamic}}
     {{/form-for}}
     <button {{action w.transition-to 'summary'}}>NEXT</button>

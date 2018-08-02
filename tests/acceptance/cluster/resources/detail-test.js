@@ -41,15 +41,29 @@ test('visiting /cluster/resources/does-not-exist', async (assert) => {
 
 
 test('add meta attribute', async (assert) => {
-  assert.expect(0);
   defaultScenario(server);
+  const url = '/cluster/my/resources/show/resource-ping?tab=attributes';
+  // columns of attributes: checkbox, key, value, delete button
+  const attributes = '#attributes table tr';
+  const key = 'foo';
+  const value = 'bar';
 
-  await visit('/cluster/my/resources/show/resource-ping?tab=attributes');
-  await click(find('h4')[0]);
-  await click('button:eq(20)');
+  await visit(url);
 
-  await fillIn(emberFormForFind('Key'), 'foo');
-  await fillIn(emberFormForFind('Value'), 'bar');
+  assert.equal(find(attributes).length, 0);
 
+  await click('button:eq(20)'); // Add meta attribute
+  await fillIn(emberFormForFind('Key'), key);
+  await fillIn(emberFormForFind('Value'), value);
   await click(emberFormButton('Add'));
+
+  andThen(() => {
+    assert.equal(find(attributes).length, 1);
+
+    const cellSelector = `${attributes}:eq(0) td`;
+    assert.equal(find(cellSelector).length, 4);
+    assert.equal(find(`${cellSelector}:eq(1)`).text(), key);
+    assert.equal(find(`${cellSelector}:eq(2)`).text(), value);
+    assert.equal(currentURL(), url);
+  });
 });

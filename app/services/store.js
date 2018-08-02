@@ -133,7 +133,10 @@ export default DS.Store.extend({
           const normalized = ser.normalizeSingleResponse(store, modelClass, response);
 
           const generateId = function generateId(json, parent) {
-            return `${Ember.get(json, `${parent}type`)}::${Ember.get(json, `${parent}id`)}`;
+            return [`${parent}type`, `${parent}id`]
+              .map(property => Ember.get(json, property))
+              .join('::')
+            ;
           };
 
           if (generateId(normalized, 'data.0.') === 'undefined::undefined') {
@@ -431,6 +434,7 @@ export default DS.Store.extend({
       nodename: nodeinfo.get('nodename'),
     };
 
+    /* eslint "implicit-arrow-linebreak": "off" */
     return new Ember.RSVP.Promise((resolve, reject) =>
       Ember.$.post(url, { data: _jsonToQueryString(node) }).then(
         (response) => {

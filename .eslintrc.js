@@ -24,6 +24,8 @@ module.exports = {
     'import/extensions': 0,
     'no-underscore-dangle': 0,
     'no-param-reassign': ['error', { props: false }],
+    "function-paren-newline": ["error", "consistent"],
+    "semi-style": "off",
   },
   globals: {
     server: true,
