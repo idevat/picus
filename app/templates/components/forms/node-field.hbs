@@ -1,0 +1,75 @@
+{{#form-field propertyName
+  class="node-field"
+  classNames=fieldClasses
+  errorClasses=errorClasses
+  hintClasses=hintClasses
+  inputClasses=inputClasses
+  labelClasses=labelClasses
+  serializeValue=serializeValue
+  deserializeValue=deserializeValue
+  object=object
+  hint=hint
+  form=form
+  label=label
+  control=control
+  focusIn=fieldFocusIn
+  update=(action update)
+  as |f|
+}}
+
+{{#with (get object propertyName) as |property|}}
+
+<div>
+  {{#if
+    ( or
+      (eq (get property "state") "unknown")
+      (eq (get property "state") "auth-fail")
+    )
+  }}
+    <input
+      value={{get property 'nodename'}}
+      placeholder='Name of the node'
+      oninput={{
+        action (pipe
+          (action (mut (get property 'nodename')) value='target.value')
+          (action 'update' '@todo:target-value')
+        )
+      }}
+    />
+
+    {{#if (eq (get property "state") "auth-fail")}}
+      <input value={{get property 'password'}} placeholder='Password'
+        oninput={{action (mut (get property 'password')) value='target.value'}}
+      />
+      <input value={{get property 'ip'}} placeholder='Enter FQDN or IP adress'
+        oninput={{action (mut (get property 'ip')) value='target.value'}}
+      />
+      <input value={{get property 'ipport'}} placeholder='port 999'
+        oninput={{action (mut (get property 'ipport')) value='target.value'}}
+      />
+    {{/if}}
+
+    {{#bs-button onClick=(action 'authorize')}}authorize{{/bs-button}}
+
+    {{#if (eq (get property "state") "auth-fail")}}
+      <br />
+      It was not possible to automatically authenticate node, please fill in
+      details.
+    {{/if}}
+
+
+    <br />
+  {{else if (eq (get property "state") "in-progress")}}
+    <input value={{get property 'nodename'}} disabled=1 />
+    <span> IN-PROGRESS </span>
+  {{else if (eq (get property "state") "auth-success")}}
+    <input value={{get property 'nodename'}} disabled=1 />
+    <span> SUCCESS </span>
+    <span> XXX </span>
+  {{/if}}
+</div>
+{{/with}}
+
+  {{f.errors}}
+  {{f.hint}}
+{{/form-field}}

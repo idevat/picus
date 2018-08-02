@@ -8,6 +8,9 @@ const Router = Ember.Router.extend({
 
 Router.map(function router() {
   this.route('login');
+  if (config.environment === 'development') {
+    this.route('scratch');
+  }
 
   this.route('cluster', { path: 'cluster/:cluster_name' }, function clusterRouter() {
     // @todo: to solve - cluster that we don't know about

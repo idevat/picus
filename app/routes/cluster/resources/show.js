@@ -8,6 +8,10 @@ export default TabRoute.extend({
   modelForm: {},
   resource: undefined,
 
+  // allResources will be object (dictionary) where key is resource name (it is
+  // a unique id) and value is resource from store
+  allResources: {},
+
   async model(params) {
     const resource = this.store.peekRecordQueryName('resource', params.resource_name);
     this.set('resource', resource);
@@ -50,14 +54,14 @@ export default TabRoute.extend({
         score: validateScore(),
       },
       addColocationPreference: {
-        _targetResources_0: validatePresence({
+        targetResourceName: validatePresence({
           presence: true,
           message: 'You have to select a resource to colocate with',
         }),
         score: validateScore(),
       },
       addOrderingPreference: {
-        _targetResources_0: validatePresence({
+        targetResourceName: validatePresence({
           presence: true,
           message: 'You have to select a resource',
         }),
@@ -68,13 +72,24 @@ export default TabRoute.extend({
       },
     };
 
+    this.set(
+      'allResources',
+      (await this.store.peekAll('resource')).reduce(
+        (allResources, rc) => {
+          allResources[rc.get('name')] = rc;
+          return allResources;
+        },
+        {},
+      ),
+    );
+
     return Ember.RSVP.hash({
       params,
       metadata,
       formData: this.get('modelForm'),
       updatingCluster: this.store.peekAll('cluster'),
       selectedResource: resource,
-      resources: this.store.peekAll('resource'),
+      allResourcesNames: Object.keys(this.get('allResources')),
       ScoreValidations,
       validations: formValidators,
     });
@@ -134,7 +149,7 @@ export default TabRoute.extend({
     addColocationPreference(form) {
       const preference = this.get('store').createRecord('colocation-preference', {
         resource: this.get('resource'),
-        targetResource: form.get('targetResources.firstObject'),
+        targetResource: this.get('allResources')[form.get('targetResourceName')],
         colocationType: form.get('colocationType'),
         score: form.get('score'),
       });
@@ -147,7 +162,7 @@ export default TabRoute.extend({
     addOrderingPreference(form) {
       const preference = this.get('store').createRecord('ordering-preference', {
         resource: this.get('resource'),
-        targetResource: form.get('targetResources.firstObject'),
+        targetResource: this.get('allResources')[form.get('targetResourceName')],
         targetAction: form.get('targetAction'),
         score: form.get('score'),
         order: form.get('order'),

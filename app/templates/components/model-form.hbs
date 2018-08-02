@@ -1,0 +1,17 @@
+{{#form-for
+  object=object
+  submit=submit
+  class=class
+  as |formFields|
+}}
+  {{
+    yield (extend-form-for formFields appSpecificFields=(hash
+      node-field=(
+        component 'forms/node-field' object=object update=update form=form
+      )
+      fence-field=(
+        component 'forms/fence-field' object=object update=update form=form
+      )
+    ))
+  }}
+{{/form-for}}
