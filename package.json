@@ -68,7 +68,6 @@
     "loader.js": "^4.0.1"
   },
   "dependencies": {
-    "dynamic": "git+https://github.com/marxsk/ember-dynamic-fields.git#rewrite",
     "ember-array-contains-helper": "^2.0.0"
   }
 }
