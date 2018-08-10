@@ -4,7 +4,7 @@ module.exports = function (environment) {
   const ENV = {
     modulePrefix: 'picus',
     environment,
-    rootURL: '/',
+    rootURL: '/ui/',
     locationType: 'auto',
     changeTracker: {
       enableIsDirty: true,
